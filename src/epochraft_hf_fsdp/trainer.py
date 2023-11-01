@@ -243,7 +243,7 @@ class Trainer:
                 # Validation
                 if self.state.step % self.config.val_steps == 0:
                     scores = self.validate()
-                    log_dict.update({f"val/{key}": value for key, value in scores.items()})
+                    log_dict.update({f"val/{key}-loss": value for key, value in scores.items()})
                     self.last_iter_completion_time = None  # Validation breaks iteration times
 
                 # Training
@@ -306,17 +306,18 @@ class Trainer:
                 * self.config.seq_len
                 * self.num_params
             )
-            flops_per_sec = flops_per_iter / sec_per_iter
+            flops = flops_per_iter / sec_per_iter
+            tflops = flops / (1e12)
         else:
             sec_per_iter = None
-            flops_per_sec = None
+            tflops = None
         self.last_iter_completion_time = time_now
 
         return {
             "train/lr": lr,
             "train/loss": loss_avg,
             "train/sec_per_iter": sec_per_iter,
-            "train/flops_per_sec": flops_per_sec,
+            "train/tflops": tflops,
         }
 
     @torch.no_grad()
