@@ -11,6 +11,7 @@ trainer:
   model: gpt2
   transformer_blocks_path: transformer.h
   fsdp_sharding_strategy: SHARD_GRAD_OP
+  use_better_transformer: True
 
   seq_len: 1024
   global_batch_size: 64

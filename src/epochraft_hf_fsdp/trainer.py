@@ -36,6 +36,7 @@ class TrainerConfig:
     model: str
     transformer_blocks_path: str
     fsdp_sharding_strategy: ShardingStrategy
+    use_better_transformer: bool
 
     seq_len: int
     global_batch_size: int
@@ -120,6 +121,15 @@ class Trainer:
             state_dict = torch.load(ckpt_path, map_location="cpu")
             model.load_state_dict(state_dict)
             del state_dict
+
+        if config.use_better_transformer:
+            try:
+                # Better Transformer
+                from optimum.bettertransformer import BetterTransformer
+
+                model = BetterTransformer.transform(model)
+            except Exception as e:
+                print(f"\nCannot wrap BetterTransformer: {e}\n")
 
         model = fsdp.setup_fsdp(model, config.fsdp_sharding_strategy, layer_cls)
         fsdp.apply_fsdp_checkpointing(model, layer_cls)
