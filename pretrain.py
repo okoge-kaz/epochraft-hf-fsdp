@@ -24,7 +24,8 @@ def main() -> None:
     config = config_module.load_config_from_cli(Config)
     fsdp.init_process_group()
     logging.setup_logger(config.trainer.save_dir)
-    logging.setup_wandb(config.wandb, config.trainer.save_dir, dataclasses.asdict(config))
+    if fsdp.get_rank() == 0:
+        logging.setup_wandb(config.wandb, config.trainer.save_dir, dataclasses.asdict(config))
 
     tokenizer = AutoTokenizer.from_pretrained(config.tokenizer or config.trainer.model)
     train_dataset = pretraining_data.construct_training_dataset(

@@ -23,15 +23,24 @@ from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
 
 
 def get_rank() -> int:
-    return int(os.environ.get("RANK", os.environ.get("SLURM_PROCID", 0)))
+    return int(
+        os.environ.get("RANK",
+                       os.environ.get("SLURM_PROCID",
+                                      os.environ.get('OMPI_COMM_WORLD_RANK', 0))))
 
 
 def get_local_rank() -> int:
-    return int(os.environ.get("LOCAL_RANK", os.environ.get("SLURM_LOCALID", 0)))
+    return int(
+        os.environ.get("LOCAL_RANK",
+                       os.environ.get("SLURM_LOCALID",
+                                      os.environ.get('OMPI_COMM_WORLD_LOCAL_RANK', 0))))
 
 
 def get_world_size() -> int:
-    return int(os.environ.get("WORLD_SIZE", os.environ.get("SLURM_NTASKS", 1)))
+    return int(
+        os.environ.get("WORLD_SIZE",
+                       os.environ.get("SLURM_NTASKS",
+                                      os.getenv('OMPI_COMM_WORLD_SIZE', 1))))
 
 
 def init_process_group() -> None:
