@@ -1,6 +1,7 @@
 # project specific ignores
 out/
 outputs/
+hostfile/
 
 
 # Byte-compiled / optimized / DLL files
