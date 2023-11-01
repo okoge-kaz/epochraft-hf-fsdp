@@ -55,4 +55,4 @@ mpirun -np $NUM_GPUS \
   -bind-to none -map-by slot \
   -x PATH \
   python pretrain.py \
-    scripts/gpt-2/gpt-2-grad-shard.yaml
+    configs/gpt-2/gpt-2-grad-shard.yaml
